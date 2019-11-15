@@ -27,6 +27,9 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static com.android.locationdemo.LocationConstants.CHANNEL_ID;
 import static com.android.locationdemo.LocationConstants.INTENT_KEY_NOTIFICATION_DETAIL;
 import static com.android.locationdemo.LocationConstants.INTENT_KEY_NOTIFICATION_TITLE;
@@ -57,6 +60,7 @@ public class LiveLocationSendingService extends Service implements LocationListe
 
     public LiveLocationSendingService() {
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.mContext = LiveLocationSendingService.this;
@@ -186,6 +190,7 @@ public class LiveLocationSendingService extends Service implements LocationListe
         double latitude = getLatitude();
         double longitude = getLongitude();
         storeInDatabase(latitude, longitude);
+        ServiceMessageHandler.sendDataToActivity(mContext, latitude, longitude, userId, LocationConstants.EVENT_FROM_GPS);
     }
 
     @Override
@@ -207,6 +212,7 @@ public class LiveLocationSendingService extends Service implements LocationListe
     private void storeInDatabase(double latitude, double longitude) {
         mDatabaseLocationDetails.child("Longitude").setValue(longitude);
         mDatabaseLocationDetails.child("Latitude").setValue(latitude);
+        mDatabaseLocationDetails.child("LastDate").setValue(new Date());
     }
 
 

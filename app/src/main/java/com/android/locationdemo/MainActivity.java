@@ -86,15 +86,20 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String userId = intent.getStringExtra(LocationConstants.INTENT_KEY_USER_ID);
-            String lat = intent.getStringExtra(LocationConstants.INTENT_KEY_LATITUDE);
-            String lng = intent.getStringExtra(LocationConstants.INTENT_KEY_LONGITUDE);
+            double lat = intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0);
+            double lng = intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE,0);
+            int event = intent.getIntExtra(LocationConstants.INTENT_KEY_EVENT_ID, -1);
+
+
+            mText.setText("Lat: " + lat + " -- Long: " + lng + "  -- userid: " + userId);
+
 
         }
     };
 
     public void registerBroadcastService(){
         LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(
-                mMessageReceiver, new IntentFilter("GPSLocationUpdates"));
+                mMessageReceiver, new IntentFilter(LocationConstants.LIVE_LOCATION_BROADCAST_CHANNEL));
     }
 
 
