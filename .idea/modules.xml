@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LocationDemo.iml" filepath="$PROJECT_DIR$/LocationDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Realtime-Vehicle-Tracking.iml" filepath="$PROJECT_DIR$/Realtime-Vehicle-Tracking.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -1,4 +1,4 @@
-package com.viral.locationdemo;
+package com.android.locationdemo;
 
 import org.junit.Test;
 

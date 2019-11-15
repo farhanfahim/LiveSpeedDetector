@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.viral.locationdemo.MainActivity">
+    tools:context="com.android.locationdemo.MainActivity">
 
     <Button
         android:id="@+id/location_btn"
@@ -21,10 +21,27 @@
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:text="Show Location"
+        android:text="Start Service"
         android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        tools:text="Show Location" />
+        android:textSize="20sp" />
+
+
+    <Button
+        android:id="@+id/stopService"
+        android:layout_width="270dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/buttonshape"
+        android:layout_below="@id/location_btn"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:text="Stop Service"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
 
     <TextView
         android:id="@+id/welcome_tv"
@@ -33,18 +50,11 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:padding="10dp"
-        android:text="Realtime Truck Tracking"
+        android:text="Realtime Tracking"
         android:textColor="#000"
         android:textSize="17sp" />
 
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/welcome_tv"
-        android:id="@+id/spinner_time"
-        android:layout_margin="10dp"
-        ></Spinner>
 
     <TextView
         android:layout_height="wrap_content"
