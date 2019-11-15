@@ -2,8 +2,13 @@ package com.android.locationdemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -75,4 +80,34 @@ public class MainActivity extends AppCompatActivity {
         stopService(serviceIntent);
     }
 
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String userId = intent.getStringExtra(LocationConstants.INTENT_KEY_USER_ID);
+            String lat = intent.getStringExtra(LocationConstants.INTENT_KEY_LATITUDE);
+            String lng = intent.getStringExtra(LocationConstants.INTENT_KEY_LONGITUDE);
+
+        }
+    };
+
+    public void registerBroadcastService(){
+        LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(
+                mMessageReceiver, new IntentFilter("GPSLocationUpdates"));
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerBroadcastService();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService();
+        unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
 }
