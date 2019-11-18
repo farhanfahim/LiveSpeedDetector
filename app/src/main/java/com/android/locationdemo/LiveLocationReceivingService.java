@@ -1,39 +1,28 @@
 package com.android.locationdemo;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Date;
-
 import static com.android.locationdemo.LocationConstants.CHANNEL_ID;
-import static com.android.locationdemo.LocationConstants.DATA_KEY_LASTDATE;
 import static com.android.locationdemo.LocationConstants.DATA_KEY_LATITUDE;
 import static com.android.locationdemo.LocationConstants.DATA_KEY_LONGITUDE;
 import static com.android.locationdemo.LocationConstants.INTENT_KEY_NOTIFICATION_DETAIL;
@@ -45,16 +34,7 @@ public class LiveLocationReceivingService extends Service {
 
     private DatabaseReference mDatabaseLocationDetails;
     private Context mContext;
-
-//    Location location;//Location
-    double latitude;//Latitude
-    double longitude;//Longitude
     String userId = "", title = "", details = "";
-
-    // The minimum time between updates in milliseconds
-
-    // Declaring a Location Manager
-    protected LocationManager mlocationManager;
 
 
     public LiveLocationReceivingService() {
@@ -99,78 +79,35 @@ public class LiveLocationReceivingService extends Service {
     }
 
 
-    public Location getLocation() {
+    public void getLocation() {
 
-        mDatabaseLocationDetails.addChildEventListener(new ChildEventListener() {
+        mDatabaseLocationDetails.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("LOCATION RECEIVING" , "onChildAdded: " + dataSnapshot.toString());
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("LOCATION RECEIVING", "onDataChange: " + dataSnapshot.toString());
 
-            }
+                try {
+                    double latitude = (double) dataSnapshot.child(DATA_KEY_LATITUDE).getValue();
+                    double longitude = (double) dataSnapshot.child(DATA_KEY_LONGITUDE).getValue();
+                    ServiceMessageHandler.sendDataToActivity(mContext, latitude, longitude, userId, LocationConstants.EVENT_FROM_FIREBASE);
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("LOCATION RECEIVING" , "onChildChanged: " + dataSnapshot.toString());
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("LOCATION RECEIVING" , "onChildRemoved: " + dataSnapshot.toString());
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("LOCATION RECEIVING" , "onChildMoved: " + dataSnapshot.toString());
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("LOCATION RECEIVING" , "onCancelled: " + databaseError.toString());
-
+                Log.d("LOCATION RECEIVING", "onCancelled: " + databaseError.toString());
             }
         });
-        return null;
     }
-
-
-//
-//    public double getLatitude() {
-//        if (location != null) {
-//            latitude = location.getLatitude();
-//        }
-//
-//
-//        return latitude;
-//    }
-//
-//    public double getLongitude() {
-//        if (location != null) {
-//            longitude = location.getLongitude();
-//        }
-//
-//        return longitude;
-//    }
 
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-
-
-
-
-
-
-    private void storeInDatabase(double latitude, double longitude) {
-        mDatabaseLocationDetails.child(DATA_KEY_LONGITUDE).setValue(longitude);
-        mDatabaseLocationDetails.child(DATA_KEY_LATITUDE).setValue(latitude);
-        mDatabaseLocationDetails.child(DATA_KEY_LASTDATE).setValue(new Date());
     }
 
 
@@ -188,10 +125,9 @@ public class LiveLocationReceivingService extends Service {
     }
 
 
-
     @Override
     public void onDestroy() {
-//        stopUsingGPS();
+        mDatabaseLocationDetails.addValueEventListener(null);
         super.onDestroy();
     }
 }
