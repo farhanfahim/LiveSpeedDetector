@@ -48,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
         mLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean locationEnabled = LiveLocationSendingService.isLocationEnabled(MainActivity.this);
-                if (locationEnabled) {
-                    startService();
-                }
+//                boolean locationEnabled = LiveLocationSendingService.isLocationEnabled(MainActivity.this);
+//                if (locationEnabled) {
+//                    startService(false);
+//                }
+
+                startService(true);
             }
         });
 
@@ -66,8 +68,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void startService() {
-        Intent serviceIntent = new Intent(this, LiveLocationSendingService.class);
+    public void startService(boolean isReceiving) {
+        Intent serviceIntent;
+        if (isReceiving) {
+            serviceIntent = new Intent(this, LiveLocationReceivingService.class);
+        } else {
+            serviceIntent = new Intent(this, LiveLocationSendingService.class);
+
+        }
+
+
         serviceIntent.putExtra(LocationConstants.INTENT_KEY_USER_ID, "1");
         serviceIntent.putExtra(LocationConstants.INTENT_KEY_NOTIFICATION_TITLE, "title");
         serviceIntent.putExtra(LocationConstants.INTENT_KEY_NOTIFICATION_DETAIL, "details");
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             // Get extra data included in the Intent
             String userId = intent.getStringExtra(LocationConstants.INTENT_KEY_USER_ID);
             double lat = intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0);
-            double lng = intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE,0);
+            double lng = intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0);
             int event = intent.getIntExtra(LocationConstants.INTENT_KEY_EVENT_ID, -1);
 
 
@@ -97,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void registerBroadcastService(){
+    public void registerBroadcastService() {
         LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(
                 mMessageReceiver, new IntentFilter(LocationConstants.LIVE_LOCATION_BROADCAST_CHANNEL));
     }

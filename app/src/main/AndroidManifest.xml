@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <service android:name="com.android.locationdemo.LiveLocationSendingService"/>
+        <service android:name=".LiveLocationReceivingService" />
     </application>
 
 </manifest>

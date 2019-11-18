@@ -11,6 +11,9 @@ public class LocationConstants {
     public static final String INTENT_KEY_NOTIFICATION_DETAIL = "detail_key";
     public static final String INTENT_KEY_LATITUDE = "latitude";
     public static final String INTENT_KEY_LONGITUDE = "longitude";
+    public static final String DATA_KEY_LATITUDE = "Latitude";
+    public static final String DATA_KEY_LONGITUDE = "Longitude";
+    public static final String DATA_KEY_LASTDATE = "LastDate";
     public static final int EVENT_FROM_GPS = 1;
     public static final int EVENT_FROM_FIREBASE = 2;
 
