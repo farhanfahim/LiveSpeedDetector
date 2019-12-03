@@ -4,43 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#202020"
 
     tools:context="com.android.locationdemo.MainActivity">
 
     <Button
-        android:id="@+id/location_btn"
+        android:id="@+id/detection"
 
-        android:layout_width="270dp"
+        android:layout_width="180dp"
 
-        android:layout_height="60dp"
+        android:layout_height="180dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="155dp"
         android:background="@drawable/buttonshape"
         android:shadowColor="#A8A8A8"
         android:shadowDx="0"
+        android:textStyle="bold"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:text="Start Service"
+        android:text="Start"
         android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
 
-    <Button
-        android:id="@+id/stopService"
-        android:layout_width="270dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="20dp"
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Detection is off"
+        android:padding="10dp"
+        android:gravity="bottom"
+        android:textSize="15sp"
+        android:id="@+id/tvStatus"
+        android:textColor="#fff"
+        android:layout_below="@+id/detection"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/buttonshape"
-        android:layout_below="@id/location_btn"
-        android:shadowColor="#A8A8A8"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="5"
-        android:text="Stop Service"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        />
 
 
 
@@ -51,8 +51,8 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:padding="10dp"
-        android:text="Realtime Tracking"
-        android:textColor="#000"
+        android:text="Speed Detector"
+        android:textColor="#fff"
         android:textSize="17sp" />
 
 
@@ -60,15 +60,17 @@
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="Location"
+        android:text=""
         android:padding="10dp"
-        android:textSize="19sp"
-        android:id="@+id/location_tv"
-        android:textColor="#000"
-        android:layout_below="@+id/stopService"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:id="@+id/tvCurrentSpeed"
+        android:textColor="#fff"
+        android:layout_below="@+id/detection"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
     />
+
 
 
 </RelativeLayout>

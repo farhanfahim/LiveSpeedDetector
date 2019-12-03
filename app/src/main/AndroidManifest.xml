@@ -22,6 +22,7 @@
         </activity>
         <service android:name="com.android.locationdemo.LiveLocationSendingService"/>
         <service android:name=".LiveLocationReceivingService" />
+        <service android:name=".SpeedDetector.SpeedDetectorService" />
     </application>
 
 </manifest>

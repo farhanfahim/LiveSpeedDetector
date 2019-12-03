@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 
@@ -21,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -34,6 +36,7 @@ import static com.android.locationdemo.LocationConstants.CHANNEL_ID;
 import static com.android.locationdemo.LocationConstants.INTENT_KEY_NOTIFICATION_DETAIL;
 import static com.android.locationdemo.LocationConstants.INTENT_KEY_NOTIFICATION_TITLE;
 import static com.android.locationdemo.LocationConstants.INTENT_KEY_USER_ID;
+import static com.android.locationdemo.ServiceMessageHandler.sendDataToActivity;
 
 
 public class LiveLocationSendingService extends Service implements LocationListener {
@@ -67,24 +70,16 @@ public class LiveLocationSendingService extends Service implements LocationListe
         userId = intent.getStringExtra(INTENT_KEY_USER_ID);
         title = intent.getStringExtra(INTENT_KEY_NOTIFICATION_TITLE);
         details = intent.getStringExtra(INTENT_KEY_NOTIFICATION_DETAIL);
+        try{
+            locationHandler.removeCallbacks(getLocationRunnable);
+        }catch (Exception e){
 
+        }
+        locationHandler.postDelayed(getLocationRunnable,0);
         mDatabaseLocationDetails = FirebaseDatabase.getInstance().getReference("currentLocation/").child(userId);
         getLocation();
-
-
         createNotificationChannel();
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(details)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent)
-                .build();
-
-        startForeground(1, notification);
 
         //do heavy work on a background thread
 
@@ -97,9 +92,19 @@ public class LiveLocationSendingService extends Service implements LocationListe
     @Override
     public void onCreate() {
         super.onCreate();
-        getLocation();
-
+        //getLocation();
+        createNotificationChannel();
     }
+
+    Handler locationHandler = new Handler();
+    Runnable getLocationRunnable =new Runnable() {
+        @Override
+        public void run() {
+            Location location = getLocation();
+            sendDataToActivity(mContext, location.getLatitude(), location.getLongitude(), userId, LocationConstants.EVENT_FROM_GPS);
+            locationHandler.postDelayed(getLocationRunnable,4000);
+        }
+    };
 
     public Location getLocation() {
         try {
@@ -121,6 +126,7 @@ public class LiveLocationSendingService extends Service implements LocationListe
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+
                         }
                     }
                 }
@@ -184,13 +190,15 @@ public class LiveLocationSendingService extends Service implements LocationListe
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("LOCATION", "onLocationChanged: " + location.toString());
-        this.location = location;
-
-        double latitude = getLatitude();
-        double longitude = getLongitude();
-        storeInDatabase(latitude, longitude);
-        ServiceMessageHandler.sendDataToActivity(mContext, latitude, longitude, userId, LocationConstants.EVENT_FROM_GPS);
+//        Log.d("LOCATION", "onLocationChanged: " + location.toString());
+//        this.location = location;
+//
+//
+//        double latitude = getLatitude();
+//        double longitude = getLongitude();
+//
+//        storeInDatabase(latitude, longitude);
+//        sendDataToActivity(mContext, latitude, longitude, userId, LocationConstants.EVENT_FROM_GPS);
     }
 
     @Override
@@ -226,6 +234,18 @@ public class LiveLocationSendingService extends Service implements LocationListe
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                    0, notificationIntent, 0);
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle(title)
+                    .setContentText(details)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentIntent(pendingIntent)
+                    .build();
+
+            startForeground(1, notification);
         }
     }
 
@@ -273,6 +293,7 @@ public class LiveLocationSendingService extends Service implements LocationListe
     @Override
     public void onDestroy() {
         stopUsingGPS();
+        locationHandler.removeCallbacks(getLocationRunnable);
         super.onDestroy();
     }
 }
