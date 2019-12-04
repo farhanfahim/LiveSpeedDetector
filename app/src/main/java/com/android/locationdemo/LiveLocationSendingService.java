@@ -102,7 +102,7 @@ public class LiveLocationSendingService extends Service implements LocationListe
         public void run() {
             Location location = getLocation();
             sendDataToActivity(mContext, location.getLatitude(), location.getLongitude(), userId, LocationConstants.EVENT_FROM_GPS);
-            locationHandler.postDelayed(getLocationRunnable,4000);
+            locationHandler.postDelayed(getLocationRunnable,2000);
         }
     };
 

@@ -1,22 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="#202020"
 
     tools:context="com.android.locationdemo.MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/welcome_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:text="Speed Detector"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+
+
 
     <Button
         android:id="@+id/detection"
 
         android:layout_width="180dp"
-
         android:layout_height="180dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="155dp"
         android:background="@drawable/buttonshape"
         android:shadowColor="#A8A8A8"
         android:shadowDx="0"
@@ -38,39 +65,25 @@
         android:textSize="15sp"
         android:id="@+id/tvStatus"
         android:textColor="#fff"
-        android:layout_below="@+id/detection"
-        android:layout_centerHorizontal="true"
         />
 
 
+        <TextView
+            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:text=""
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:id="@+id/tvCurrentSpeed"
+            android:textColor="#fff"
+            />
 
-    <TextView
-        android:id="@+id/welcome_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-        android:padding="10dp"
-        android:text="Speed Detector"
-        android:textColor="#fff"
-        android:textSize="17sp" />
 
-
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text=""
-        android:padding="10dp"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:id="@+id/tvCurrentSpeed"
-        android:textColor="#fff"
-        android:layout_below="@+id/detection"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-    />
+    </LinearLayout>
 
 
 
-</RelativeLayout>
+
+</LinearLayout>

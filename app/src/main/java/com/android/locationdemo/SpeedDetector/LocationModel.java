@@ -2,39 +2,23 @@ package com.android.locationdemo.SpeedDetector;
 
 public class LocationModel {
 
-    double lat = 0;
-    double lng = 0;
     double cLat = 0;
     double cLng = 0;
     double pLat = 0;
     double pLng = 0;
     double speed = 0;
-
-
-    public LocationModel(){}
-
-
+    double lat = 0;
+    double lng = 0;
 
     public LocationModel(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
     }
 
-    public double getLat() {
-        return lat;
-    }
+    public LocationModel(){}
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
 
-    public double getLng() {
-        return lng;
-    }
 
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
 
     public double getcLat() {
         return cLat;
@@ -74,5 +58,22 @@ public class LocationModel {
 
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

@@ -37,24 +37,30 @@ public class SpeedoMeter {
 
     double distance;
 
+    int i = 1;
+    Handler handler = new Handler();
+
     String result;
 
+
+    OnSpeedChangeListener mSpeedChangeListener;
     LocationModel locationModel = new LocationModel();
-    private OnSpeedChangeListener mSpeedChangeListener;
-    private ArrayList<LocationModel> LocationModels = new ArrayList<>();
+    private ArrayList<LocationModel> locationModels = new ArrayList<>();
+
+
+    LocationModel locationObject;
     Context context;
 
     public OnSpeedChangeListener getmSpeedChangeListener() {
         return mSpeedChangeListener;
     }
 
+
     public void setmSpeedChangeListener(OnSpeedChangeListener mSpeedChangeListener) {
         this.mSpeedChangeListener = mSpeedChangeListener;
     }
 
-    public SpeedoMeter(){
 
-    }
     public SpeedoMeter(Context context) {
         this.context = context;
     }
@@ -100,68 +106,99 @@ public class SpeedoMeter {
         @Override
         public void onReceive(final Context context, Intent intent) {
 
+            locationModels.add( new LocationModel(24.927704,67.095716));
+            locationModels.add(new LocationModel(24.928460, 67.096700));
+            locationModels.add( new LocationModel(24.929092, 67.097526));
+            locationModels.add(new LocationModel(24.929092, 67.097526));
+            locationModels.add(new LocationModel(24.9309307,67.0991022));
+
 
             if(!checkPreviousLatLng){
-                locationModel.setpLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
-                locationModel.setpLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
+//                locationModel.setpLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
+//                locationModel.setpLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
+                locationObject = locationModels.get(0);
+                locationModel.setpLat(locationObject.getLat());
+                locationModel.setpLng(locationObject.getLng());
 
                 //This method returns the time in millis
                 startTime = System.currentTimeMillis();
                 checkPreviousLatLng = true;
 
             }else{
-                locationModel.setcLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
-                locationModel.setcLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
+//                locationModel.setcLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
+//                locationModel.setcLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
 
-                //This method returns the time in millis
-                endTime = System.currentTimeMillis();
 
-                distance = distance(locationModel.getpLat(),locationModel.getpLng(),locationModel.getcLat(),locationModel.getcLng());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(i<=4){
+                                locationObject = locationModels.get(i);
+                                locationModel.setcLat(locationObject.getLat());
+                                locationModel.setcLng(locationObject.getLng());
+                                //This method returns the time in millis
+                                endTime = System.currentTimeMillis();
 
-                if (!checkInitialSpeed) {
-                    initialSpeed = calcSpeed(startTime, endTime);
+                                distance = distance(locationModel.getpLat(),locationModel.getpLng(),locationModel.getcLat(),locationModel.getcLng());
+
+                                if (!checkInitialSpeed) {
+                                    initialSpeed = calcSpeed(startTime, endTime);
+
+                                }
+                                if(checkInitialSpeed){
+                                    finalSpeed = calcSpeed(startTime, endTime);
+                                }
+
+
+                                double changeInSpeed;
+                                if (finalSpeed == 0 && initialSpeed == 0){
+                                    changeInSpeed = 0;
+                                }else {
+                                    if(!checkInitialSpeed){
+                                        changeInSpeed = initialSpeed / timeDifference;
+                                    }else{
+                                        changeInSpeed = finalSpeed - initialSpeed / timeDifference;
+                                    }
+
+                                }
+
+
+                                locationModel.setSpeed(changeInSpeed);
+
+                                /*result =  ("Initial Speed: "+ initialSpeed
+                                        + "\nFinal Speed: "+ finalSpeed
+                                        + "\ntime : "+ timeDifference
+                                        + "\ndistance : "+ distance
+                                        + "\nprevious Lat: "+ locationModel.getpLat()
+                                        + "\nprevious long: "+ locationModel.getpLng()
+                                        + "\ncurrent Lat: "+ locationModel.getcLat()
+                                        + "\ncurrent long: "+ locationModel.getcLng()
+                                        + "\nspeed change: "+changeInSpeed);*/
+
+
+                                result =  ("\ntime : "+ timeDifference + "\ndistance : "+ distance  + "\nspeed change: "+changeInSpeed);
+
+                                if(changeInSpeed <= -10 && timeDifference <= 4){
+                                    mSpeedChangeListener.onSpeedChange(result+"\nAccident Detected");
+                                }else{
+                                    mSpeedChangeListener.onSpeedChange(result);
+                                }
+
+
+                                locationModel.setpLat(locationModel.getcLat());
+                                locationModel.setpLng(locationModel.getcLng());
+                                startTime = endTime;
+                                if (checkInitialSpeed){
+                                    initialSpeed = finalSpeed;
+                                }
+                                checkInitialSpeed = true;
+                                i++;
+                            }
+
+                        }
+                    }, 2000);
 
                 }
-                if(checkInitialSpeed){
-                    finalSpeed = calcSpeed(startTime, endTime);
-                }
-
-
-                double changeInSpeed;
-                if (finalSpeed == 0 && initialSpeed == 0){
-                    changeInSpeed = 0;
-                }else {
-                    changeInSpeed = finalSpeed - initialSpeed / timeDifference;
-                }
-
-
-                locationModel.setSpeed(changeInSpeed);
-
-                result =  ("Initial Speed: "+ initialSpeed
-                        + "\nFinal Speed: "+ finalSpeed
-                        + "\ntime : "+ timeDifference
-                        + "\ndistance : "+ distance
-                        + "\nprevious Lat: "+ locationModel.getpLat()
-                        + "\nprevious long: "+ locationModel.getpLng()
-                        + "\ncurrent Lat: "+ locationModel.getcLat()
-                        + "\ncurrent long: "+ locationModel.getcLng()
-                        + "\nspeed change: "+changeInSpeed);
-
-                if(changeInSpeed <= -10 && timeDifference <= 5){
-                    mSpeedChangeListener.onSpeedChange("Accident Detected");
-                }else{
-                    mSpeedChangeListener.onSpeedChange(result);
-                }
-
-
-                locationModel.setpLat(locationModel.getcLat());
-                locationModel.setpLng(locationModel.getcLng());
-                startTime = endTime;
-                if (checkInitialSpeed){
-                    initialSpeed = finalSpeed;
-                }
-                checkInitialSpeed = true;
-            }
 
             }
     };
