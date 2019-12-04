@@ -20,11 +20,6 @@ import java.util.Random;
 
 public class SpeedoMeter {
 
-    double previousLat = 0;
-    double previousLng = 0;
-    double currentLat = 0;
-    double currentLng = 0;
-
     boolean checkPreviousLatLng = false;
     boolean checkInitialSpeed = false;
 
@@ -37,18 +32,15 @@ public class SpeedoMeter {
 
     double distance;
 
-    int i = 1;
-    Handler handler = new Handler();
-
     String result;
 
+    /*int i = 1;
+    Handler handler = new Handler();
+    private ArrayList<LocationModel> locationModels = new ArrayList<>();
+    LocationModel locationObject;*/
 
     OnSpeedChangeListener mSpeedChangeListener;
     LocationModel locationModel = new LocationModel();
-    private ArrayList<LocationModel> locationModels = new ArrayList<>();
-
-
-    LocationModel locationObject;
     Context context;
 
     public OnSpeedChangeListener getmSpeedChangeListener() {
@@ -106,36 +98,38 @@ public class SpeedoMeter {
         @Override
         public void onReceive(final Context context, Intent intent) {
 
-            locationModels.add( new LocationModel(24.927704,67.095716));
+            // sample data for testing
+            /*locationModels.add( new LocationModel(24.927704,67.095716));
             locationModels.add(new LocationModel(24.928460, 67.096700));
             locationModels.add( new LocationModel(24.929092, 67.097526));
             locationModels.add(new LocationModel(24.929092, 67.097526));
-            locationModels.add(new LocationModel(24.9309307,67.0991022));
+            locationModels.add(new LocationModel(24.9309307,67.0991022));*/
 
 
             if(!checkPreviousLatLng){
-//                locationModel.setpLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
-//                locationModel.setpLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
-                locationObject = locationModels.get(0);
+                locationModel.setpLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
+                locationModel.setpLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
+                /*locationObject = locationModels.get(0);
                 locationModel.setpLat(locationObject.getLat());
-                locationModel.setpLng(locationObject.getLng());
+                locationModel.setpLng(locationObject.getLng());*/
 
                 //This method returns the time in millis
                 startTime = System.currentTimeMillis();
                 checkPreviousLatLng = true;
 
             }else{
-//                locationModel.setcLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
-//                locationModel.setcLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
+                locationModel.setcLat(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LATITUDE, 0));
+                locationModel.setcLng(intent.getDoubleExtra(LocationConstants.INTENT_KEY_LONGITUDE, 0));
 
 
-                    handler.postDelayed(new Runnable() {
+                // test with sample data
+                   /* handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             if(i<=4){
                                 locationObject = locationModels.get(i);
                                 locationModel.setcLat(locationObject.getLat());
-                                locationModel.setcLng(locationObject.getLng());
+                                locationModel.setcLng(locationObject.getLng());*/
                                 //This method returns the time in millis
                                 endTime = System.currentTimeMillis();
 
@@ -165,6 +159,7 @@ public class SpeedoMeter {
 
                                 locationModel.setSpeed(changeInSpeed);
 
+                                //show Full DATA
                                 /*result =  ("Initial Speed: "+ initialSpeed
                                         + "\nFinal Speed: "+ finalSpeed
                                         + "\ntime : "+ timeDifference
@@ -175,7 +170,7 @@ public class SpeedoMeter {
                                         + "\ncurrent long: "+ locationModel.getcLng()
                                         + "\nspeed change: "+changeInSpeed);*/
 
-
+                                // show specific data
                                 result =  ("\ntime : "+ timeDifference + "\ndistance : "+ distance  + "\nspeed change: "+changeInSpeed);
 
                                 if(changeInSpeed <= -10 && timeDifference <= 4){
@@ -192,11 +187,11 @@ public class SpeedoMeter {
                                     initialSpeed = finalSpeed;
                                 }
                                 checkInitialSpeed = true;
-                                i++;
+                               /* i++;
                             }
 
                         }
-                    }, 2000);
+                    }, 2000);*/
 
                 }
 
